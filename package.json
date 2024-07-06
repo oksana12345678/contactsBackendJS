@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src/**/*.js",
+    "start": "node .src/index.js"
   },
   "keywords": [],
-  "author": "YOUR_NAME",
+  "author": "Oksana Tanashchuk <oksana.tanashuk@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.6.0",
@@ -23,7 +24,6 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.4.5",
-    "pino": "^9.2.0",
     "pino-http": "^10.2.0"
   }
 }
