@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "lint": "eslint src/**/*.js",
-    "start": "node index.js"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "Oksana Tanashchuk <oksana.tanashuk@gmail.com>",
