@@ -30,7 +30,7 @@ export const updateContact = async (contactId, payload, option = {}) => {
   if (!result || !result.value) return null;
 
   return {
-    student: result.value,
+    contact: result.value,
     isNew: Boolean(result?.lastErrorObject?.upserted),
   };
 };
