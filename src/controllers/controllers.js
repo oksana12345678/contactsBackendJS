@@ -42,7 +42,7 @@ export const getContactByIdController = async (req, res, next) => {
 export const createContactController = async (req, res, next) => {
   try {
     const contact = await createContact(req.body);
-    res.json({
+    res.status(201).json({
       status: 201,
       message: 'Successfully create a contact!',
       data: contact,
