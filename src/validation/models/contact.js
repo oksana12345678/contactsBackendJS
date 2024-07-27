@@ -32,9 +32,6 @@ export default Contact;
 
 export const validateContact = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
-    'string.base': 'Name should be a string',
-    'string.min': 'Name should by less {#limit} characters',
-    'string.max': 'Name cannot be more then {#limit} characters ',
     'any.required': 'Name is required',
   }),
   phoneNumber: Joi.string().min(3).max(20).required().messages({
@@ -43,14 +40,10 @@ export const validateContact = Joi.object({
   }),
   email: Joi.string().email(),
   ifFavourite: Joi.boolean(),
-  contactType: Joi.string()
-    .valid('work', 'home', 'personal')
-    .required()
-    .default('personal')
-    .messages({
-      'string.base': 'Choose one of proposed options ',
-      'all.required': 'Plisse choose option is required',
-    }),
+  contactType: Joi.string().valid('work', 'home', 'personal').messages({
+    'string.base': 'Choose one of proposed options ',
+    'all.required': 'Plisse choose option is required',
+  }),
 });
 
 export const validateUpdate = Joi.object({
