@@ -30,10 +30,10 @@ const setupServer = () => {
     console.log(`Time: ${new Date().toLocaleString()}`);
     next();
   });
-  
+
   app.use(router);
 
-  app.use('* ', notFoundHandler);
+  app.use('*', notFoundHandler);
 
   app.use(errorHandler);
 
