@@ -15,6 +15,7 @@ const authenticate = async (req, res, next) => {
 
   if (bearer !== 'Bearer' || !token) {
     next(createHttpError(401, 'Auth header should be of type Bearer!'));
+    return;
   }
 
   const session = await SessionCollection.findOne({
@@ -23,6 +24,7 @@ const authenticate = async (req, res, next) => {
 
   if (!session) {
     next(createHttpError(401, 'Access token expired!'));
+    return;
   }
 
   const isAccessTokenExpired =
@@ -30,6 +32,7 @@ const authenticate = async (req, res, next) => {
 
   if (isAccessTokenExpired) {
     next(createHttpError(401, 'Access token expired!'));
+    return;
   }
 
   const user = await UserCollection.findById(session.userId);
