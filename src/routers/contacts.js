@@ -14,13 +14,12 @@ import isValid from '../middlewares/isValid.js';
 import authenticate from '../middlewares/authenticate.js';
 
 const contactsRouter = Router();
-
 contactsRouter.use(authenticate);
 
-contactsRouter.get('/', ctrlWrapper(getContactsController));
+contactsRouter.get('/contacts', ctrlWrapper(getContactsController));
 
 contactsRouter.get(
-  '/:contactId',
+  '/contacts/:contactId',
   isValid,
   ctrlWrapper(getContactByIdController),
 );
