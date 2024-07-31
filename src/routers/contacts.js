@@ -11,7 +11,7 @@ import {
 import validateBody from '../middlewares/validateBody.js';
 import { validateContact, validateUpdate } from '../validation/contacts.js';
 import isValid from '../middlewares/isValid.js';
-import authenticate from '../middlewares/authenticate.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const contactsRouter = Router();
 

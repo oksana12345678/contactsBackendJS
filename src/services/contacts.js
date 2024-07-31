@@ -15,8 +15,8 @@ export const getAllContacts = async ({
 
   const contactsQuery = Contact.find({ userId });
 
-  if (filter.type) {
-    contactsQuery.where('contactType').equals(filter.type);
+  if (filter.contactType) {
+    contactsQuery.where('contactType').equals(filter.contactType);
   }
   if (filter.isFavourite) {
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
@@ -25,13 +25,13 @@ export const getAllContacts = async ({
   const [contactsCount, contacts] = await Promise.all([
     Contact.find({ userId }).merge(contactsQuery).countDocuments(),
     contactsQuery
-      .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(limit)
+      .sort({ [sortBy]: sortOrder })
       .exec(),
   ]);
 
-  const paginationData = calculatePagination(contactsCount, page, perPage);
+  const paginationData = calculatePagination(contactsCount, perPage, page);
 
   return {
     data: contacts,
@@ -44,28 +44,43 @@ export const getContactById = async (contactId, userId) => {
   return contact;
 };
 
-export const createContact = async (payload) => {
-  const contact = await Contact.create({ ...payload, userId: payload.userId });
-  await contact.save();
-  return contact;
-};
-
 export const deleteContact = async (contactId, userId) => {
-  const contact = await Contact.findOneAndDelete({ _id: contactId, userId });
+  const contact = await Contact.findOneAndDelete({
+    _id: contactId,
+    userId,
+  });
   return contact;
 };
 
-export const updateContact = async (contactId, payload, option = {}) => {
-  const result = await Contact.findByIdAndUpdate({ _id: contactId }, payload, {
-    new: true,
-    includeResultMetadata: true,
-    ...option,
-  });
+export const updateContact = async (
+  contactId,
+  payload,
+  userId,
+  options = {},
+) => {
+  const rawResult = await Contact.findOneAndUpdate(
+    { _id: contactId, userId },
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
 
-  if (!result || !result.value) return null;
+  if (!rawResult || !rawResult.value) return null;
 
   return {
-    contact: result.value,
-    isNew: Boolean(result?.lastErrorObject?.upserted),
+    contact: rawResult.value,
+    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
+};
+
+export const createContact = async (payload) => {
+  const contact = new Contact({
+    ...payload,
+    userId: payload.userId,
+  });
+  await contact.save();
+  return contact;
 };

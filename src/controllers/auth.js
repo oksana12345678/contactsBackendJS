@@ -9,7 +9,7 @@ import {
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
 
-  res.status(201).json({
+  res.json({
     status: 201,
     message: 'Successfully registered a user!',
     data: user,
@@ -23,7 +23,6 @@ export const loginUserController = async (req, res) => {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
   });
-
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
@@ -46,7 +45,7 @@ export const logoutUserController = async (req, res) => {
   res.clearCookie('sessionId');
   res.clearCookie('refreshToken');
 
-  res.send(204);
+  res.status(204).send();
 };
 
 const setupSession = (res, session) => {
@@ -54,7 +53,6 @@ const setupSession = (res, session) => {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
   });
-
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
@@ -71,7 +69,7 @@ export const refreshUserSessionController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully refresh a session!',
+    message: 'Successfully refreshed a session!',
     data: {
       accessToken: session.accessToken,
     },

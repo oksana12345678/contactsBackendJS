@@ -8,9 +8,7 @@ import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
 export const registerUser = async (payload) => {
   const user = await UserCollection.findOne({ email: payload.email });
 
-  if (user) {
-    throw createHttpError(409, 'Email in use!');
-  }
+  if (user) throw createHttpError(409, 'Email in use');
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
@@ -24,9 +22,8 @@ export const loginUser = async (payload) => {
   const user = await UserCollection.findOne({ email: payload.email });
 
   if (!user) {
-    throw createHttpError(404, 'User not found!');
+    throw createHttpError(404, 'User not found');
   }
-
   const isEqual = await bcrypt.compare(payload.password, user.password);
 
   if (!isEqual) {
@@ -70,24 +67,21 @@ export const refreshSession = async ({ sessionId, refreshToken }) => {
   });
 
   if (!session) {
-    throw createHttpError(401, 'Session not found!');
+    throw createHttpError(401, 'Session not found');
   }
 
-  const isSessionTokenExpire =
+  const isSessionTokenExpired =
     new Date() > new Date(session.refreshTokenValidUntil);
 
-  if (isSessionTokenExpire) {
-    throw createHttpError(401, 'Session token expired!');
+  if (isSessionTokenExpired) {
+    throw createHttpError(401, 'Session token expired');
   }
 
   const newSession = createSession();
 
-  await SessionCollection.deleteOne({
-    _id: sessionId,
-    refreshToken,
-  });
+  await SessionCollection.deleteOne({ _id: sessionId, refreshToken });
 
-  return SessionCollection.create({
+  return await SessionCollection.create({
     userId: session.userId,
     ...newSession,
   });
