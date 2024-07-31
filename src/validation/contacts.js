@@ -6,7 +6,6 @@ export const validateContact = Joi.object({
   email: Joi.string().email(),
   isFavourite: Joi.boolean(),
   contactType: Joi.string().valid('work', 'home', 'personal'),
-  // userId: Joi.string().required(),
 });
 
 export const validateUpdate = Joi.object({
