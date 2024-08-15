@@ -24,7 +24,7 @@ paths:
       $ref: '../swagger/paths/{id}/put.yaml'
     patch:
       $ref: '../swagger/paths/{id}/patch.yaml'
-  /students:
+  /contacts:
     get:
       $ref: '../swagger/paths/get.yaml'
     post:
