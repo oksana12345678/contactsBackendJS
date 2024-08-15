@@ -28,7 +28,7 @@
     }
   ],
   "paths": {
-    "/students/{id}": {
+    "/contacts/{id}": {
       "get": {
         "tags": [
           "Contacts"
@@ -278,7 +278,7 @@
         }
       }
     },
-    "/students": {
+    "/contacts": {
       "get": {
         "tags": [
           "Contacts"
@@ -544,7 +544,7 @@
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
                 "required": [
