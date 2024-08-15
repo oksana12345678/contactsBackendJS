@@ -6,7 +6,7 @@ description: 'Login user'
 security: []
 requestBody:
   content:
-    JSON:
+    application/json:
       schema:
         type: object
         required:

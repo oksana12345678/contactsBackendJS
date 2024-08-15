@@ -646,7 +646,7 @@
         ],
         "requestBody": {
           "content": {
-            "JSON": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "required": [
@@ -722,7 +722,7 @@
         "security": [],
         "requestBody": {
           "content": {
-            "JSON": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "required": [
