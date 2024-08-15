@@ -191,11 +191,6 @@
                       "personal"
                     ]
                   },
-                  "userId": {
-                    "description": "User id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
-                  },
                   "photo": {
                     "description": "Contact photo",
                     "type": "string",
@@ -328,11 +323,6 @@
                       "work",
                       "personal"
                     ]
-                  },
-                  "userId": {
-                    "description": "User id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
                   },
                   "photo": {
                     "description": "Contact photo",
@@ -579,11 +569,6 @@
                       "work",
                       "personal"
                     ]
-                  },
-                  "userId": {
-                    "description": "User id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
                   },
                   "photo": {
                     "description": "Contact photo",
