@@ -244,7 +244,7 @@
         ],
         "requestBody": {
           "content": {
-            "JSON": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "required": [],
