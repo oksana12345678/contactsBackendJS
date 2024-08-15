@@ -921,8 +921,7 @@
         "required": [
           "_id",
           "name",
-          "phoneNumber",
-          "userId"
+          "phoneNumber"
         ],
         "properties": {
           "_id": {
