@@ -155,6 +155,57 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "name": {
+                    "description": "Contact name",
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "phoneNumber": {
+                    "description": "Contact phone number",
+                    "type": "string",
+                    "example": "111111111"
+                  },
+                  "email": {
+                    "description": "Contact email",
+                    "type": "string",
+                    "example": "example@gmail.com"
+                  },
+                  "isFavourite": {
+                    "description": "Is favorite contact?",
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "contactType": {
+                    "description": "Type of contact",
+                    "type": "string",
+                    "enum": [
+                      "home",
+                      "work",
+                      "personal"
+                    ]
+                  },
+                  "userId": {
+                    "description": "User id",
+                    "type": "string",
+                    "example": "65e4decdd286b30065d54af9"
+                  },
+                  "photo": {
+                    "description": "Contact photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Put contact",
@@ -174,7 +225,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully upserted contact with id 65ca67e7ae7f10c88b598384!"
+                      "example": "Successfully upserted contact!"
                     },
                     "data": {
                       "type": "object",
@@ -312,7 +363,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully found contact with id 65ca67e7ae7f10c88b598384!"
+                      "example": "Successfully patched contact!"
                     },
                     "data": {
                       "type": "object",
