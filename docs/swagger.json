@@ -595,8 +595,7 @@
                       "example": "Successfully registered a user!"
                     },
                     "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/auth"
+                      "type": "object"
                     }
                   }
                 }
