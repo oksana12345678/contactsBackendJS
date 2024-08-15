@@ -10,10 +10,10 @@ requestBody:
     JSON:
       schema:
         type: object
-        required:
-          - name
-          - email
-          - password
+        # required:
+        #   - name
+        #   - email
+        #   - password
         properties:
           name:
             description: 'User name'
