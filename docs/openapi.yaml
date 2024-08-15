@@ -15,7 +15,7 @@ servers:
   - url: http://localhost:3000
   - url: https://validation-5dsv.onrender.com
 paths:
-  /students/{id}:
+  /contacts/{id}:
     get:
       $ref: '../swagger/paths/{id}/get.yaml'
     delete:
