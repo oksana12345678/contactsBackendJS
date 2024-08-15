@@ -7,7 +7,7 @@ security:
   - bearerAuth: []
 requestBody:
   content:
-    x-www-form-urlencoded:
+    JSON:
       schema:
         type: object
         required:
