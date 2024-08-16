@@ -37,9 +37,10 @@ const setupServer = () => {
   });
 
   app.use('/api-docs', swaggerDocs());
-  app.use(routers);
 
   app.use('/uploads', express.static(UPLOAD_DIR));
+
+  app.use(routers);
 
   app.use('*', notFoundHandler);
 
