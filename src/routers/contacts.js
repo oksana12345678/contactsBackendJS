@@ -47,9 +47,10 @@ contactsRouter.delete(
 
 contactsRouter.put(
   '/:contactId',
-  upload.single('photo'),
-  validateBody(validateContact),
+  // upload.single('photo'),
   isValidId,
+  // validateBody(validateUpdate),
+  validateBody(validateContact),
   ctrlWrapper(upsertContactController),
 );
 
