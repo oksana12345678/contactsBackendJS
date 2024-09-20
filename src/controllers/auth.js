@@ -8,6 +8,7 @@ import {
   requestResetToken,
   resetPassword,
 } from '../services/auth.js';
+import { getAllContacts } from '../services/contacts.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -30,9 +31,14 @@ export const loginUserController = async (req, res) => {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
   });
+
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
+  });
+
+  const user = getAllContacts({
+    userId: req.user._id,
   });
 
   res.json({
@@ -40,6 +46,7 @@ export const loginUserController = async (req, res) => {
     message: 'Successfully logged in an user!',
     data: {
       accessToken: session.accessToken,
+      user: user,
     },
   });
 };
@@ -73,12 +80,16 @@ export const refreshUserSessionController = async (req, res) => {
   });
 
   setupSession(res, session);
+  const user = getAllContacts({
+    userId: req.user._id,
+  });
 
   res.json({
     status: 200,
     message: 'Successfully refreshed a session!',
     data: {
       accessToken: session.accessToken,
+      user: user,
     },
   });
 };
