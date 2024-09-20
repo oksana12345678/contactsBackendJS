@@ -12,6 +12,7 @@ import parsePaginationParams from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import parseFilterParams from '../utils/parseFilterParams.js';
 import { getAllContacts } from '../services/contacts.js';
+import { verifyToken } from '../utils/verifyToken.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -71,6 +72,18 @@ const setupSession = (res, session) => {
 };
 
 export const refreshUserSessionController = async (req, res) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // або з cookies, якщо це ваш випадок
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token is required' });
+  }
+
+  // Перевірте токен
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+
   const session = await refreshSession({
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
