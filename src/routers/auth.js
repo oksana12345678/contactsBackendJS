@@ -16,6 +16,8 @@ import {
   resetPasswordController,
 } from '../controllers/auth.js';
 
+import { authenticate } from '../middlewares/authenticate.js';
+
 const router = express.Router();
 const parseJSON = express.json();
 
@@ -35,8 +37,6 @@ router.post(
 
 router.post('/logout', parseJSON, ctrlWrapper(logoutUserController));
 
-router.post('/refresh', parseJSON, ctrlWrapper(refreshUserSessionController));
-
 router.post(
   '/send-reset-email',
   validateBody(requestResetEmailSchema),
@@ -48,5 +48,9 @@ router.post(
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
+
+router.use(authenticate);
+
+router.post('/refresh', parseJSON, ctrlWrapper(refreshUserSessionController));
 
 export default router;

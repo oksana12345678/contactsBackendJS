@@ -8,6 +8,9 @@ import {
   requestResetToken,
   resetPassword,
 } from '../services/auth.js';
+import parsePaginationParams from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import parseFilterParams from '../utils/parseFilterParams.js';
 import { getAllContacts } from '../services/contacts.js';
 
 export const registerUserController = async (req, res) => {
@@ -31,14 +34,9 @@ export const loginUserController = async (req, res) => {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
   });
-
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
-  });
-
-  const user = getAllContacts({
-    userId: req.user._id,
   });
 
   res.json({
@@ -46,7 +44,6 @@ export const loginUserController = async (req, res) => {
     message: 'Successfully logged in an user!',
     data: {
       accessToken: session.accessToken,
-      user: user,
     },
   });
 };
@@ -78,18 +75,27 @@ export const refreshUserSessionController = async (req, res) => {
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
 
-  setupSession(res, session);
-  const user = getAllContacts({
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
     userId: req.user._id,
   });
+
+  setupSession(res, session);
 
   res.json({
     status: 200,
     message: 'Successfully refreshed a session!',
     data: {
       accessToken: session.accessToken,
-      user: user,
+      user: { name: req.user.name, ...contacts },
     },
   });
 };
