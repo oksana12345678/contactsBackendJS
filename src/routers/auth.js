@@ -10,47 +10,40 @@ import ctrlWrapper from '../utils/ctrlWrapper.js';
 import {
   loginUserController,
   logoutUserController,
-  refreshUserSessionController,
   registerUserController,
   requestResetEmailController,
   resetPasswordController,
 } from '../controllers/auth.js';
 
-import { authenticate } from '../middlewares/authenticate.js';
-
-const router = express.Router();
+const routerAuth = express.Router();
 const parseJSON = express.json();
 
-router.post(
+routerAuth.post(
   '/register',
   parseJSON,
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
 
-router.post(
+routerAuth.post(
   '/login',
   parseJSON,
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
 
-router.post('/logout', parseJSON, ctrlWrapper(logoutUserController));
+routerAuth.post('/logout', parseJSON, ctrlWrapper(logoutUserController));
 
-router.post(
+routerAuth.post(
   '/send-reset-email',
   validateBody(requestResetEmailSchema),
   ctrlWrapper(requestResetEmailController),
 );
 
-router.post(
+routerAuth.post(
   '/reset-pwd',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
 
-router.use(authenticate);
-
-router.post('/refresh', parseJSON, ctrlWrapper(refreshUserSessionController));
-
-export default router;
+export default routerAuth;
