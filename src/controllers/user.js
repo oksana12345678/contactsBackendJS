@@ -4,11 +4,15 @@ import { refreshSession } from '../services/user.js';
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', //TODO прибрати якщо перестану  використовувати
     expires: new Date(Date.now() + ONE_DAY),
+    sameSite: 'lax', //TODO прибрати якщо перестану  використовувати
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', //TODO прибрати якщо перестану  використовувати
     expires: new Date(Date.now() + ONE_DAY),
+    sameSite: 'lax', //TODO прибрати якщо перестану  використовувати
   });
 };
 
