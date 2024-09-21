@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import env from './evn';
+import env from './evn.js';
 
 export const verifyToken = (token) => {
   const secretKey = env('JWT_SECRET');
