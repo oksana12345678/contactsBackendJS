@@ -739,10 +739,10 @@
         }
       }
     },
-    "/auth/refresh": {
+    "/users/current": {
       "post": {
-        "tags": ["Auth"],
-        "summary": "refresh user",
+        "tags": ["User"],
+        "summary": "refresh current user information",
         "operationId": "refreshSession",
         "description": "Refresh session",
         "security": [
