@@ -3,16 +3,12 @@ import { refreshSession } from '../services/user.js';
 
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === 'production', //TODO прибрати якщо перестану  використовувати
+    httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
-    sameSite: 'lax', //TODO прибрати якщо перестану  використовувати
   });
   res.cookie('sessionId', session._id, {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === 'production', //TODO прибрати якщо перестану  використовувати
+    httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
-    sameSite: 'lax', //TODO прибрати якщо перестану  використовувати
   });
 };
 
@@ -23,11 +19,6 @@ export const refreshUserSessionController = async (req, res) => {
   });
 
   setupSession(res, session);
-  // TODO headers
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   res.json({
     status: 200,
