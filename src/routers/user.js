@@ -8,7 +8,7 @@ const parseJSON = express.json();
 
 routerUser.use(authenticate);
 
-routerUser.get(
+routerUser.post(
   '/current',
   parseJSON,
   ctrlWrapper(refreshUserSessionController),
