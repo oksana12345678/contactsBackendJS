@@ -22,7 +22,12 @@ export const refreshUserSessionController = async (req, res) => {
     refreshToken: req.cookies.refreshToken,
   });
 
-  setupSession(res, session);
+    setupSession(res, session);
+    // TODO headers
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   res.json({
     status: 200,
