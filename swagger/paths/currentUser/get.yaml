@@ -1,5 +1,5 @@
 tags:
-  - Auth
+  - User
 summary: refresh user
 operationId: refreshSession
 description: 'Refresh session'
@@ -12,26 +12,19 @@ requestBody:
         type: object
         required:
           - accessToken
-          - refreshToken
-          - accessTokenValidUntil
-          - refreshTokenValidUntil
         properties:
           accessToken:
             description: 'Access token'
             type: string
-          refreshToken:
-            description: 'Refresh token'
+          name:
+            description: 'User name'
             type: string
-          accessTokenValidUntil:
-            description: 'Access token valid until'
-            type: number
-          refreshTokenValidUntil:
-            description: 'Refresh token valid until'
+            example: 'John'
+          email:
+            description: 'User email'
             type: string
-          userId:
-            description: 'User id'
-            type: string
-            example: 65e4decdd286b30065d54af9
+            example: 'john@gmail.com'
+  
 responses:
   '200':
     description: Refresh session
