@@ -11,13 +11,11 @@ properties:
   refreshToken:
     description: 'Refresh token'
     type: string
-  accessTokenValidUntil:
-    description: 'Access token valid until'
-    type: number
-  refreshTokenValidUntil:
-    description: 'Refresh token valid until'
+  name:
+    description: 'User name'
     type: string
-  userId:
-    description: 'User id'
+    example: 'John'
+  email:
+    description: 'User email'
     type: string
-    example: 65e4decdd286b30065d54af9
+    example: 'john@gmail.com'
