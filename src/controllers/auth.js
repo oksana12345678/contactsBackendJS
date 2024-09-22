@@ -38,6 +38,7 @@ export const loginUserController = async (req, res) => {
     status: 200,
     message: 'Successfully logged in an user!',
     data: {
+      user: session.user,
       accessToken: session.accessToken,
     },
   });
@@ -53,8 +54,6 @@ export const logoutUserController = async (req, res) => {
 
   res.status(204).send();
 };
-
-
 
 export const requestResetEmailController = async (req, res, next) => {
   try {
