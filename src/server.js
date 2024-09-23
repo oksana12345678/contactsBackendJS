@@ -1,5 +1,5 @@
 import express from 'express';
-// import cors from 'cors';
+import cors from 'cors';
 import pino from 'pino-http';
 import dotenv from 'dotenv';
 import env from './utils/evn.js';
@@ -19,11 +19,11 @@ const setupServer = () => {
 
   app.use(cookieParser());
 
-  // const corsOptions = {
-  //   origin: 'http://localhost:5173',
-  //   credentials: true,
-  // };
-  // app.use(cors(corsOptions));
+  const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true,
+  };
+  app.use(cors(corsOptions));
 
   app.use((req, res, next) => {
     res.header(
