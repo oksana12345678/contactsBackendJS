@@ -18,28 +18,28 @@ const setupServer = () => {
   const app = express();
 
   //TODO check this working or not
-  app.use(function (req, res, next) {
-    res.header(
-      'Access-Control-Allow-Origin',
-      'https://phone-book-kohl.vercel.app',
-    );
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET,HEAD,PUT,PATCH,POST,DELETE',
-    );
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-    );
-    next();
-  });
+  // app.use(function (req, res, next) {
+  //   res.header(
+  //     'Access-Control-Allow-Origin',
+  //     'https://phone-book-kohl.vercel.app',
+  //   );
+  //   res.header('Access-Control-Allow-Credentials', 'true');
+  //   res.header(
+  //     'Access-Control-Allow-Methods',
+  //     'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   );
+  //   res.header(
+  //     'Access-Control-Allow-Headers',
+  //     'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  //   );
+  //   next();
+  // });
 
   const corsOptions = {
     origin: 'https://phone-book-kohl.vercel.app',
     credentials: true,
   };
-  app.use('*', cors(corsOptions));
+  app.use(cors(corsOptions));
 
   app.use(express.json());
 
