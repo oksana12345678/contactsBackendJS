@@ -23,7 +23,15 @@ const setupServer = () => {
     origin: 'https://phone-book-kohl.vercel.app',
     credentials: true,
   };
-  app.use(cors(corsOptions));
+  app.use('https://phone-book-kohl.vercel.app', cors(corsOptions));
+
+  app.use((req, res, next) => {
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    );
+    next();
+  });
 
   app.use((req, res, next) => {
     console.log('Cookies:', req.cookies);
