@@ -17,6 +17,8 @@ const PORT = Number(env('PORT', '3000'));
 const setupServer = () => {
   const app = express();
 
+  app.use(cookieParser());
+
   const corsOptions = {
     origin: 'https://phone-book-kohl.vercel.app',
     credentials: true,
@@ -29,8 +31,6 @@ const setupServer = () => {
   });
 
   app.use(express.json());
-
-  app.use(cookieParser());
 
   app.use(
     pino({
