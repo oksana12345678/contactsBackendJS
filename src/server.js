@@ -23,7 +23,7 @@ const setupServer = () => {
     origin: 'https://phone-book-kohl.vercel.app',
     credentials: true,
   };
-  app.use('https://phone-book-kohl.vercel.app', cors(corsOptions));
+  app.use(cors(corsOptions));
 
   app.use((req, res, next) => {
     res.header(
