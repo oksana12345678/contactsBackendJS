@@ -5,13 +5,13 @@ const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     secure: false,
-    sameSite: 'None',
+    sameSite: 'Lax',
     expires: new Date(Date.now() + ONE_DAY),
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     secure: false,
-    sameSite: 'None',
+    sameSite: 'Lax',
     expires: new Date(Date.now() + ONE_DAY),
   });
 };
