@@ -21,7 +21,7 @@ const setupServer = () => {
   app.use(function (req, res, next) {
     res.header(
       'Access-Control-Allow-Origin',
-      'https://phone-book-kohl.vercel.app/',
+      'https://phone-book-kohl.vercel.app',
     );
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header(
@@ -36,7 +36,7 @@ const setupServer = () => {
   });
 
   const corsOptions = {
-    origin: 'https://phone-book-kohl.vercel.app/',
+    origin: 'https://phone-book-kohl.vercel.app',
     credentials: true,
   };
   app.use('*', cors(corsOptions));
