@@ -37,9 +37,9 @@ paths:
   /auth/logout:
     post:
       $ref: '../swagger/paths/logout/post.yaml'
-  /auth/refresh:
+  /users/current:
     post:
-      $ref: '../swagger/paths/currentUser/get.yaml'
+      $ref: '../swagger/paths/currentUser/post.yaml'
 components:
   securitySchemes:
     bearerAuth:

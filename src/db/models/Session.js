@@ -2,6 +2,8 @@ import { model, Schema } from 'mongoose';
 
 const sessionSchema = new Schema(
   {
+    user: { name: { type: String }, email: { type: String } },
+
     userId: { type: Schema.Types.ObjectId, ref: 'users' },
     accessToken: {
       type: String,
