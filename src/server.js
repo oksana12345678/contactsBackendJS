@@ -42,6 +42,8 @@ const setupServer = () => {
   };
   app.use(cors(corsOptions));
 
+  app.options('*', cors(corsOptions)); // Allow preflight requests
+
   app.use((req, res, next) => {
     res.header(
       'Access-Control-Allow-Headers',
