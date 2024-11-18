@@ -9,6 +9,7 @@ import {
   requestResetToken,
   resetPassword,
 } from '../services/auth.js';
+import UserCollection from '../db/models/User.js';
 
 // import jwt from 'jsonwebtoken';
 // import env from '../utils/evn.js';
@@ -70,6 +71,8 @@ export const logoutUserController = async (req, res) => {
 // };
 
 export const refreshUserSessionController = async (req, res, next) => {
+  const { userId } = req.body;
+  const user = await UserCollection.findOne({ userId: userId });
   try {
     const accessToken =
       req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
@@ -96,7 +99,10 @@ export const refreshUserSessionController = async (req, res, next) => {
       status: 200,
       message: 'Access token refreshed successfully!',
       data: {
-        user: {},
+        user: {
+          name: user.name,
+          email: user.email,
+        },
         accessToken: accessToken,
       },
     });

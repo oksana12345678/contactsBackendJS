@@ -45,7 +45,7 @@ export const loginUser = async (payload) => {
   await SessionCollection.deleteOne({ userId: user._id });
 
   const accessToken = jwt.sign({ userId: user._id }, env('JWT_SECRET'), {
-    expiresIn: '15m',
+    expiresIn: '90m',
   });
 
   const refreshToken = jwt.sign({ userId: user._id }, env('JWT_SECRET'), {
