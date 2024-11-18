@@ -19,17 +19,12 @@ const setupServer = () => {
 
   app.use(cookieParser());
 
-  // const corsOptions = {
-  //   origin: 'https://n5xf4lmx-5174.euw.devtunnels.ms',
-  //   credentials: true,
-  // };
-  // Define allowed URLs
   const allowedOrigins = [
     'https://n5xf4lmx-5174.euw.devtunnels.ms',
     'https://phone-book-kohl.vercel.app',
+    'http://localhost:5173',
   ];
 
-  // Configure CORS options
   const corsOptions = {
     origin: function (origin, callback) {
       if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -38,11 +33,11 @@ const setupServer = () => {
         callback(new Error('Not allowed by CORS'));
       }
     },
-    credentials: true, // Allow cookies if needed
+    credentials: true,
   };
   app.use(cors(corsOptions));
 
-  app.options('*', cors(corsOptions)); // Allow preflight requests
+  app.options('*', cors(corsOptions));
 
   app.use((req, res, next) => {
     res.header(

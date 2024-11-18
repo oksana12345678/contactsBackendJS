@@ -10,10 +10,12 @@ import ctrlWrapper from '../utils/ctrlWrapper.js';
 import {
   loginUserController,
   logoutUserController,
+  refreshUserSessionController,
   registerUserController,
   requestResetEmailController,
   resetPasswordController,
 } from '../controllers/auth.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const routerAuth = express.Router();
 const parseJSON = express.json();
@@ -44,6 +46,14 @@ routerAuth.post(
   '/reset-pwd',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
+);
+
+routerAuth.use(authenticate);
+
+routerAuth.post(
+  '/current',
+  parseJSON,
+  ctrlWrapper(refreshUserSessionController),
 );
 
 export default routerAuth;
