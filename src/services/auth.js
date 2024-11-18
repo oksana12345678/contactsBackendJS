@@ -143,29 +143,33 @@ const createSession = () => {
   };
 };
 
-export const refreshSession = async ({ sessionId, refreshToken }) => {
-  const session = await SessionCollection.findOne({
-    _id: sessionId,
-    refreshToken,
-  });
+export const refreshSession = async ({ refreshToken }) => {
+  const session = await SessionCollection.findOne({ refreshToken });
 
   if (!session) {
-    throw createHttpError(401, 'Session not found');
+    throw createHttpError(401, 'Invalid refresh token');
   }
 
   const isSessionTokenExpired =
     new Date() > new Date(session.refreshTokenValidUntil);
 
   if (isSessionTokenExpired) {
-    throw createHttpError(401, 'Session token expired');
+    throw createHttpError(401, 'Refresh token expired');
   }
 
   const newSession = createSession();
 
-  await SessionCollection.deleteOne({ _id: sessionId, refreshToken });
+  await SessionCollection.updateOne(
+    { refreshToken },
+    {
+      accessToken: newSession.accessToken,
+      refreshToken: newSession.refreshToken,
+      refreshTokenValidUntil: newSession.refreshTokenValidUntil,
+    },
+  );
 
-  return await SessionCollection.create({
-    userId: session.userId,
-    ...newSession,
-  });
+  return {
+    accessToken: newSession.accessToken,
+    refreshToken: newSession.refreshToken,
+  };
 };

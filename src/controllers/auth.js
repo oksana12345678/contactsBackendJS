@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { ONE_DAY } from '../constants/index.js';
+// import { ONE_DAY } from '../constants/index.js';
 import {
   loginUser,
   logoutUser,
@@ -26,14 +26,14 @@ export const registerUserController = async (req, res) => {
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
+  // res.cookie('refreshToken', session.refreshToken, {
+  //   httpOnly: true,
+  //   expires: new Date(Date.now() + ONE_DAY),
+  // });
+  // res.cookie('sessionId', session._id, {
+  //   httpOnly: true,
+  //   expires: new Date(Date.now() + ONE_DAY),
+  // });
 
   res.json({
     status: 200,
@@ -84,40 +84,42 @@ export const resetPasswordController = async (req, res) => {
   });
 };
 
-const setupSession = (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-};
+// const setupSession = (res, session) => {
+//   res.cookie('refreshToken', session.refreshToken, {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: 'None',
+//     expires: new Date(Date.now() + ONE_DAY),
+//   });
+//   res.cookie('sessionId', session._id, {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: 'None',
+//     expires: new Date(Date.now() + ONE_DAY),
+//   });
+// };
 
 export const refreshUserSessionController = async (req, res) => {
-  console.log('REEEEEEEQ', req.cookies);
-  const session = await refreshSession({
-    sessionId: req.cookies.sessionId,
-    refreshToken: req.cookies.refreshToken,
-  });
+  try {
+    const { refreshToken } = req.body; // Отримуємо refreshToken з тіла запиту
+    if (!refreshToken) {
+      throw createHttpError(400, 'Refresh token is required');
+    }
 
-  console.log('Session:', session);
-  setupSession(res, session);
+    const session = await refreshSession({ refreshToken });
 
-  res.json({
-    status: 200,
-    message: 'Successfully refreshed a session!',
-    data: {
-      accessToken: session.accessToken,
-      user: {
-        name: req.user.name,
-        email: req.user.email,
+    res.json({
+      status: 200,
+      message: 'Successfully refreshed a session!',
+      data: {
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
       },
-    },
-  });
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message || 'Failed to refresh the session.',
+    });
+  }
 };
