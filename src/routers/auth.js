@@ -48,7 +48,7 @@ routerAuth.post(
   ctrlWrapper(resetPasswordController),
 );
 
-routerAuth.use(authenticate);
+// routerAuth.use(authenticate);
 
 routerAuth.post(
   '/current',
