@@ -73,6 +73,7 @@ export const requestResetEmailController = async (req, res, next) => {
     next(err);
   }
 };
+
 export const resetPasswordController = async (req, res) => {
   await resetPassword(req.body);
 
@@ -87,13 +88,13 @@ const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: 'None',
+    sameSite: 'strict',
     expires: new Date(Date.now() + ONE_DAY),
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     secure: true,
-    sameSite: 'None',
+    sameSite: 'strict',
     expires: new Date(Date.now() + ONE_DAY),
   });
 };
