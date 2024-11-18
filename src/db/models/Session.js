@@ -2,6 +2,10 @@ import { model, Schema } from 'mongoose';
 
 const sessionSchema = new Schema(
   {
+    user: {
+      name: String,
+      email: String,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'users',

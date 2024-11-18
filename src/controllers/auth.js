@@ -1,83 +1,111 @@
 import createHttpError from 'http-errors';
+// import { ONE_DAY } from '../constants/index.js';
 import {
   loginUser,
+  logoutUser,
+  // refreshAccessToken,
+  // refreshSession,
   registerUser,
   requestResetToken,
   resetPassword,
-  refreshAccessToken,
 } from '../services/auth.js';
 
-export const registerUserController = async (req, res) => {
-  try {
-    const user = await registerUser(req.body);
+// import jwt from 'jsonwebtoken';
+// import env from '../utils/evn.js';
 
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully registered a user!',
-      data: {
-        name: user.name,
-        email: user.email,
-        _id: user._id,
-      },
-    });
-  } catch (err) {
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message: err.message || 'Failed to register a user.',
-    });
-  }
+export const registerUserController = async (req, res) => {
+  const user = await registerUser(req.body);
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully registered a user!',
+    data: {
+      name: user.name,
+      email: user.email,
+      _id: user._id,
+    },
+  });
 };
 
 export const loginUserController = async (req, res) => {
-  try {
-    const { accessToken, refreshToken, user } = await loginUser(req.body);
+  const { accessToken, user } = await loginUser(req.body);
 
-    // Встановлюємо refreshToken у cookies (опціонально)
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true, // Використовуйте лише HTTPS
-      sameSite: 'None',
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день
-    });
-
-    res.json({
-      status: 200,
-      message: 'Successfully logged in a user!',
-      data: {
-        user: {
-          name: user.name,
-          email: user.email,
-        },
-        accessToken,
+  res.json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      user: {
+        name: user.name,
+        email: user.email,
       },
-    });
-  } catch (err) {
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message: err.message || 'Failed to log in a user.',
-    });
-  }
+      accessToken: accessToken,
+    },
+  });
 };
 
 export const logoutUserController = async (req, res) => {
-  try {
-    // Якщо refreshToken передається у cookies
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-    });
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
 
-    res.status(204).send();
-  } catch (err) {
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message: err.message || 'Failed to log out a user.',
+  res.status(204).send();
+};
+//TODO find out why cookies are not transmitted via https
+// const setupSession = (res, session) => {
+//   res.cookie('refreshToken', session.refreshToken, {
+//     httpOnly: true,
+//     expires: new Date(Date.now() + ONE_DAY),
+//   });
+//   res.cookie('sessionId', session._id, {
+//     httpOnly: true,
+//     expires: new Date(Date.now() + ONE_DAY),
+//   });
+// };
+// const generateRefreshToken = (userId) => {
+//   return jwt.sign(
+//     { userId },
+//     'your_refresh_token_secret',
+//     { expiresIn: '30d' }, // Термін дії рефреш-токену
+//   );
+// };
+
+export const refreshUserSessionController = async (req, res, next) => {
+  try {
+    const accessToken =
+      req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
+
+    console.log('Authorization header:', req.headers.authorization);
+    console.log('User from token:', req.user);
+
+    if (!accessToken) {
+      throw createHttpError(401, 'Refresh token is missing');
+    }
+    //TODO update token
+    // const decoded = refreshAccessToken(accessToken, req.body); // Decode the refresh token
+
+    // const newAccessToken = jwt.sign(
+    //   { userId: decoded.userId },
+    //   env('JWT_SECRET'),
+    //   {
+    //     expiresIn: '1h', // Adjust expiration as needed
+    //   },
+    // );
+    // console.log(newAccessToken);
+
+    res.json({
+      status: 200,
+      message: 'Access token refreshed successfully!',
+      data: {
+        user: {},
+        accessToken: accessToken,
+      },
     });
+  } catch (err) {
+    next(err); // Pass the error to the next middleware or error handler
   }
 };
 
-export const requestResetEmailController = async (req, res) => {
+export const requestResetEmailController = async (req, res, next) => {
   try {
     await requestResetToken(req.body.email);
 
@@ -87,63 +115,17 @@ export const requestResetEmailController = async (req, res) => {
       data: {},
     });
   } catch (err) {
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message:
-        err.message || 'Failed to send the email, please try again later.',
-    });
+    createHttpError(500, 'Failed to send the email, please try again later.');
+    next(err);
   }
 };
 
 export const resetPasswordController = async (req, res) => {
-  try {
-    await resetPassword(req.body);
+  await resetPassword(req.body);
 
-    res.json({
-      message: 'Password has been successfully reset.',
-      status: 200,
-      data: {},
-    });
-  } catch (err) {
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message: err.message || 'Failed to reset the password.',
-    });
-  }
-};
-
-export const refreshUserSessionController = async (req, res) => {
-  try {
-    // Якщо refreshToken передається через cookies
-    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-
-    if (!refreshToken) {
-      throw createHttpError(400, 'Refresh token is required');
-    }
-
-    const { accessToken, newRefreshToken } = await refreshAccessToken(
-      refreshToken,
-    );
-
-    // Оновлюємо refreshToken у cookies
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день
-    });
-
-    res.json({
-      status: 200,
-      message: 'Successfully refreshed a session!',
-      data: {
-        accessToken,
-      },
-    });
-  } catch (err) {
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message: err.message || 'Failed to refresh the session.',
-    });
-  }
+  res.json({
+    message: 'Password has been successfully reset.',
+    status: 200,
+    data: {},
+  });
 };
