@@ -131,18 +131,27 @@ export const resetPassword = async (payload) => {
   await SessionCollection.deleteOne({ userId: user._id });
 };
 
-const createSession = () => {
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
+const encryptToken = (token) => {
+  const cipher = crypto.createCipheriv(
+    'aes-256-ctr',
+    process.env.TOKEN_SECRET,
+    Buffer.alloc(16, 0),
+  );
+  return cipher.update(token, 'utf8', 'hex') + cipher.final('hex');
+};
+
+const createSession = (userId) => {
+  const accessToken = encryptToken(randomBytes(30).toString('base64'));
+  const refreshToken = encryptToken(randomBytes(30).toString('base64'));
 
   return {
+    userId,
     accessToken,
     refreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
   };
 };
-
 export const refreshSession = async ({ refreshToken }) => {
   const session = await SessionCollection.findOne({ refreshToken });
 

@@ -1,65 +1,83 @@
 import createHttpError from 'http-errors';
-// import { ONE_DAY } from '../constants/index.js';
 import {
   loginUser,
-  logoutUser,
-  refreshSession,
   registerUser,
   requestResetToken,
   resetPassword,
+  refreshAccessToken,
 } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
-  const user = await registerUser(req.body);
+  try {
+    const user = await registerUser(req.body);
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully registered a user!',
-    data: {
-      name: user.name,
-      email: user.email,
-      _id: user._id,
-    },
-  });
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully registered a user!',
+      data: {
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+      },
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message || 'Failed to register a user.',
+    });
+  }
 };
 
 export const loginUserController = async (req, res) => {
-  const session = await loginUser(req.body);
+  try {
+    const { accessToken, refreshToken, user } = await loginUser(req.body);
 
-  // res.cookie('refreshToken', session.refreshToken, {
-  //   httpOnly: true,
-  //   expires: new Date(Date.now() + ONE_DAY),
-  // });
-  // res.cookie('sessionId', session._id, {
-  //   httpOnly: true,
-  //   expires: new Date(Date.now() + ONE_DAY),
-  // });
+    // Встановлюємо refreshToken у cookies (опціонально)
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true, // Використовуйте лише HTTPS
+      sameSite: 'None',
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день
+    });
 
-  res.json({
-    status: 200,
-    message: 'Successfully logged in an user!',
-    data: {
-      user: {
-        name: session.user.name,
-        email: session.user.email,
+    res.json({
+      status: 200,
+      message: 'Successfully logged in a user!',
+      data: {
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+        accessToken,
       },
-      accessToken: session.accessToken,
-    },
-  });
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message || 'Failed to log in a user.',
+    });
+  }
 };
 
 export const logoutUserController = async (req, res) => {
-  if (req.cookies.sessionId) {
-    await logoutUser(req.cookies.sessionId);
+  try {
+    // Якщо refreshToken передається у cookies
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+    });
+
+    res.status(204).send();
+  } catch (err) {
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message || 'Failed to log out a user.',
+    });
   }
-
-  res.clearCookie('sessionId');
-  res.clearCookie('refreshToken');
-
-  res.status(204).send();
 };
 
-export const requestResetEmailController = async (req, res, next) => {
+export const requestResetEmailController = async (req, res) => {
   try {
     await requestResetToken(req.body.email);
 
@@ -69,51 +87,57 @@ export const requestResetEmailController = async (req, res, next) => {
       data: {},
     });
   } catch (err) {
-    createHttpError(500, 'Failed to send the email, please try again later.');
-    next(err);
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message:
+        err.message || 'Failed to send the email, please try again later.',
+    });
   }
 };
 
 export const resetPasswordController = async (req, res) => {
-  await resetPassword(req.body);
+  try {
+    await resetPassword(req.body);
 
-  res.json({
-    message: 'Password has been successfully reset.',
-    status: 200,
-    data: {},
-  });
+    res.json({
+      message: 'Password has been successfully reset.',
+      status: 200,
+      data: {},
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message || 'Failed to reset the password.',
+    });
+  }
 };
-
-// const setupSession = (res, session) => {
-//   res.cookie('refreshToken', session.refreshToken, {
-//     httpOnly: true,
-//     secure: true,
-//     sameSite: 'None',
-//     expires: new Date(Date.now() + ONE_DAY),
-//   });
-//   res.cookie('sessionId', session._id, {
-//     httpOnly: true,
-//     secure: true,
-//     sameSite: 'None',
-//     expires: new Date(Date.now() + ONE_DAY),
-//   });
-// };
 
 export const refreshUserSessionController = async (req, res) => {
   try {
-    const { refreshToken } = req.body; // Отримуємо refreshToken з тіла запиту
+    // Якщо refreshToken передається через cookies
+    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
     if (!refreshToken) {
       throw createHttpError(400, 'Refresh token is required');
     }
 
-    const session = await refreshSession({ refreshToken });
+    const { accessToken, newRefreshToken } = await refreshAccessToken(
+      refreshToken,
+    );
+
+    // Оновлюємо refreshToken у cookies
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день
+    });
 
     res.json({
       status: 200,
       message: 'Successfully refreshed a session!',
       data: {
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
+        accessToken,
       },
     });
   } catch (err) {
